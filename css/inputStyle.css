@@ -1,0 +1,23 @@
+.inputBody{
+    margin-bottom: 20px;
+}
+
+.inputTitle{
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.input{
+    height: 40px;
+    width: 230px;
+    padding-left: 10px;
+    padding-right: 10px;
+    outline: none;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+}
