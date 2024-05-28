@@ -25,17 +25,18 @@ jobs:
           title: "Auto PR from ${{ github.ref }}"
           body: "This is an automatically created pull request from ${{ github.ref }}."
           reviewers: |
-            reviewer1-Sebastchan8 
-            reviewer2-PsychoticProgrammer 
+            Sebastchan8
+            PsychoticProgrammer
           assignees: |
-            assignee1-Sebastchan8 
-            assignee2-PsychoticProgrammer 
+            Sebastchan8
+            PsychoticProgrammer
           labels: |
             auto-pr
 
   merge-pull-request:
     runs-on: ubuntu-latest
     needs: create-pull-request
+    if: github.event.pull_request.merged == true
 
     steps:
       - name: Merge Pull Request
@@ -57,49 +58,35 @@ jobs:
 
   build-and-deploy:
     runs-on: ubuntu-latest
+    needs: merge-pull-request
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Instalar Node.js solo para usar herramientas de linting
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Versión mínima necesaria para las herramientas de linting
+          node-version: '14'
 
-      # Instalar HTMLHint
       - name: Install HTMLHint
         run: npm install -g htmlhint
 
-      # Instalar StyleLint
       - name: Install StyleLint
         run: npm install -g stylelint stylelint-config-standard
 
-      # Instalar ESLint
       - name: Install ESLint
         run: npm install -g eslint
 
-      # Ejecutar HTMLHint
       - name: Run HTMLHint
         run: htmlhint "*/.html"
 
-      # Ejecutar StyleLint
       - name: Run StyleLint
         run: stylelint "*/.css"
 
-      # Ejecutar ESLint
       - name: Run ESLint
         run: eslint "*/.js"
 
-      # # En caso de que se deba correr
-      # - name: Intalar Dependencias
-      #   run: npm install
-
-      # - name: Run Compiled App
-      #   run: ng build --base-href=/OnlineShop/view/
-
-      # Desplegar a GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
