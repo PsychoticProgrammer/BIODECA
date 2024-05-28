@@ -1,9 +1,10 @@
-name: CI/CD DAS
+name: CI/CD Workflow
 
 on:
   push:
     branches:
-      - main
+      - main  # O la rama que uses para producción
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -12,20 +13,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Instalar Node.js solo para usar herramientas de linting
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Versión mínima necesaria para las herramientas de linting
+
+      # Instalar HTMLHint
+      - name: Install HTMLHint
+        run: npm install -g htmlhint
+
+      # Instalar StyleLint
+      - name: Install StyleLint
+        run: npm install -g stylelint stylelint-config-standard
+
+      # Instalar ESLint
+      - name: Install ESLint
+        run: npm install -g eslint
+
+      # Ejecutar HTMLHint
       - name: Run HTMLHint
-        run: |
-          npx htmlhint "*/.html"
+        run: htmlhint "*/.html"
 
+      # Ejecutar StyleLint
       - name: Run StyleLint
-        run: |
-          npx stylelint "*/.css"
+        run: stylelint "*/.css"
 
+      # Ejecutar ESLint
       - name: Run ESLint
-        run: |
-          npx eslint "*/.js"
+        run: eslint "*/.js"
 
+      # Desplegar a GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./  # Publica desde la raíz del proyecto
