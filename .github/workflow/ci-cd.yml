@@ -2,27 +2,34 @@ name: CI/CD Workflow
 
 on:
   push:
-    branches-ignore:
+    branches:
       - main 
 
 jobs:
-  create-pull-request:
+  updateAuthor:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: checking out code
         uses: actions/checkout@v2
 
-      - name: Create Pull Request
-        id: create_pr
-        uses: peter-evans/create-pull-request@v4
+      - name: extract git commit data
+        uses: rlespinasse/git-commit-data-action@v1.x
+
+      - name: Update Author Information
+        run: echo ${{ env.GIT_COMMIT_AUTHOR_NAME }} > AUTHOR
+
+      - name: Raise PR
+        uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.DAS_TOKEN }}
+          branch: "develop"
+          base: main
+          title: "demo for auto pr from ${{ github.ref }}"
+          committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}>
+          author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}>
+          token: ${{ secrets.GITHUB_TOKEN }}
+          delete-branch: true
           commit-message: "Automatic pull request"
-          committer: "GitHub Actions <actions@github.com>"
-          author: "GitHub Actions <actions@github.com>"
-          branch: main
-          title: "Auto PR from ${{ github.ref }}"
           body: "This is an automatically created pull request from ${{ github.ref }}."
           reviewers: |
             Sebastchan8
