@@ -21,7 +21,8 @@ jobs:
           commit-message: "Automatic pull request"
           committer: "GitHub Actions <actions@github.com>"
           author: "GitHub Actions <actions@github.com>"
-          branch: main
+          branch: joan_dev
+          base: main
           title: "Auto PR from ${{ github.ref }}"
           body: "This is an automatically created pull request from ${{ github.ref }}."
           reviewers: |
